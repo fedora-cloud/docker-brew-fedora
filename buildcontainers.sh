@@ -1,7 +1,9 @@
 #!/bin/bash -x
-sudo appliance-creator -c container-$1-$2.ks -d -v -t /tmp \
-    -o /tmp --name "fedora-$2-$1" --release $2 \
+sudo rm -rf /tmp/fedora*
+rm *.tar.xz
+sudo appliance-creator -c container-20-medium.ks -d -v -t /tmp \
+    -o /tmp --name "fedora-20-medium" --release 20 \
     --format=qcow2
 virt-tar-out -a \
-    /tmp/fedora-$2-$1/fedora-$2-$1-sda.qcow2 / - | \
-    gzip --best > fedora-$2-$1.tar.gz
+    /tmp/fedora-20-medium/fedora-20-medium-sda.qcow2 / - | \
+    xz --best > fedora-20-medium.tar.xz
