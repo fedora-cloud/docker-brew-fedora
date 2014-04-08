@@ -1,9 +1,33 @@
 #!/bin/bash -x
-sudo rm -rf /tmp/fedora*
+# 
+# buildcontainers.sh
+#
+# Script to build containers using kickstarts
+#
+
+# The associative array will keep tabs on name:tag images so 
+# we can build many at once
+
+
+declare -A containers
+
+containers['fedora']='20-medium'
+
+# Clean out old containers from current working dir
 rm *.tar.xz
-sudo appliance-creator -c container-20-medium.ks -d -v -t /tmp \
-    -o /tmp --name "fedora-20-medium" --release 20 \
+
+for name in ${!containers[@]}
+do
+  rm -rf /tmp/${name}*
+
+  appliance-creator -c ${name}-${containers["${name}"]}.ks \
+    -d -v -t /tmp -o /tmp \
+    --name ${name}-${containers["${name}"]} \
+    --release ${containers["${name}"]} \
     --format=qcow2
-virt-tar-out -a \
-    /tmp/fedora-20-medium/fedora-20-medium-sda.qcow2 / - | \
-    xz --best > fedora-20-medium.tar.xz
+
+  virt-tar-out -a \
+    /tmp/${name}-${containers["${name}"]}/${name}-${containers["${name}"]}-sda.qcow2 / - | \
+    xz --best > centos-6-docker.tar.xz
+
+done
