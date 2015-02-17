@@ -1,6 +1,6 @@
 FROM scratch
 MAINTAINER Lokesh Mandvekar <lsm5@fedoraproject.org> - ./buildcontainers.sh
-ADD fedora-rawhide-medium.tar.xz /
+ADD Fedora-Docker-Base-20150210-rawhide.x86_64.tar.xz /
 
 VOLUME ["/run", "/tmp"]
 ENV container=docker
