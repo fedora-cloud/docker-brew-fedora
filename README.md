@@ -1,15 +1,74 @@
 # docker-brew-fedora
 
-1. Extract the rootfs from the koji tarballs that fedora rel-eng provides.
+1. Extract the rootfs from the koji tarballs that
+   [Fedora Release-Engineering](https://fedoraproject.org/wiki/ReleaseEngineering)
+   provides.
+   * Nightly builds of [rawhide](https://fedoraproject.org/wiki/Releases/Rawhide)
+   and
+   [branched](https://fedoraproject.org/wiki/Releases/Branched)
+   are located
+   [here](http://koji.fedoraproject.org/koji/tasks?start=0&state=all&view=tree&method=image&order=-id).
+   ```
+# EXAMPLE:
 
-2. Re-tar the rootfs into xz fomat. This is needed because Docker Hub only
-   takes tarballs of the rootfs while the koji tarball has the rootfs along
-   with metadata.
+$ tar -xvJf Fedora-Docker-Base-rawhide-20150716.x86_64.tar.xz
+e7dac1f802a53315e8d8b719d3ff2bea8e65026674a67cf631d1ea3f5244756b/
+e7dac1f802a53315e8d8b719d3ff2bea8e65026674a67cf631d1ea3f5244756b/json
+e7dac1f802a53315e8d8b719d3ff2bea8e65026674a67cf631d1ea3f5244756b/VERSION
+e7dac1f802a53315e8d8b719d3ff2bea8e65026674a67cf631d1ea3f5244756b/layer.tar
+repositories
+```
 
-3. add the tarball in step 2 along with the kickstart script used to the appropriate branch in this repo.
+2. Re-name the `layer.tar` to something meaningful, example
+   `fedora-${release}-release`. This is needed because Docker Hub only takes
+   tarballs of the rootfs while the koji tarball has the rootfs along with
+   metadata.
+   ```
+# EXAMPLE:
 
-4. Force push (or do whatever to make sure to wipeout all prior history) to fedora-cloud/docker-brew-fedora on github.
+$ mv layer.tar fedora-rawhide-20150716.tar
 
-5. record commit logs of the updates in: https://github.com/fedora-cloud/official-images/blob/master/library/fedora
+$ xz --best fedora-rawhide-20150716.tar
+```
 
-6. Send a PR from fedora-cloud/official-images to docker-library/official-images
+3. Add the xz compressed tarball in step 2 along with the kickstart script
+   used to the appropriate branch in this repo. (Update the Dockerfile if the
+   tar.xz filename changed or otherwise necessary)
+
+4. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
+   history so we aren’t storing giant piles of tarballs in git.
+   ```
+# EXAMPLE
+
+$ git checkout master
+
+$ git branch -D rawhide
+
+$ git checkout --orphan rawhide
+
+$ git rm --cached -r .
+
+## Copy in the files from your working dir
+
+$ git add .
+
+$ git commit -m “update rawhide - 20150716”
+[rawhide 4aa1a9e] update rawhide - 20150716
+ Date: Mon Jul 20 15:25:00 2015 -0500
+ 4 files changed, 92 insertions(+)
+ create mode 100644 Dockerfile
+ create mode 100644 README.md
+ create mode 100644 fedora-rawhide-20150716.tar.xz
+ create mode 100644 koji-f24-build-10384746-base.ks
+
+$ git push -f origin rawhide
+```
+
+5. Record commit logs of the updates
+   [here](https://github.com/fedora-cloud/official-images/blob/master/library/fedora)
+
+6. Send a [Pull Request](https://help.github.com/articles/using-pull-requests/)
+   from
+   [fedora-cloud/official-images](https://github.com/fedora-cloud/official-images)
+   to
+   [docker-library/official-images](https://github.com/docker-library/official-images/)
