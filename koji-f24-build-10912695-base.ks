@@ -69,6 +69,7 @@ dnf-yum
 fedora-release
 rootfiles
 vim-minimal
+sssd-client
 -kernel
 
 %end
