@@ -1,4 +1,22 @@
-# docker-brew-fedora
+docker-brew-fedora
+==================
+
+This project space exists as an upload entry point to import the official 
+[Fedora](https://getfedora.org/) [Docker](https://www.docker.com/)
+Base Images built in [Fedora Koji](http://koji.fedoraproject.org/koji/)
+(Fedora's Build System) so that they may be submitted to the
+[official-images](https://github.com/docker-library/official-images) repository
+for the [Docker Hub](https://hub.docker.com/).
+
+These images are built from a [kickstart](https://github.com/rhinstaller/pykickstart/blob/master/docs/kickstart-docs.rst)
+file that is part of the [Fedora spin-kickstarts](https://fedorahosted.org/spin-kickstarts/)
+sub-project of Fedora. If there is an request for a change to the contents
+of the Fedora Docker Base Image, please file an issue ticket in the Fedora
+spin-kickstarts [trac](http://trac.edgewall.org/) instance
+[here](https://fedorahosted.org/spin-kickstarts/newticket).
+
+Docker Base Image Import process
+--------------------------------
 
 1. Extract the rootfs from the koji tarballs that
    [Fedora Release-Engineering](https://fedoraproject.org/wiki/ReleaseEngineering)
