@@ -66,6 +66,8 @@ $ git checkout --orphan rawhide
 
 $ git rm --cached -r .
 
+$ rm -fr ./*
+
 ## Copy in the files from your working dir
 
 $ git add .
