@@ -26,7 +26,8 @@ Docker Base Image Import process
    [branched](https://fedoraproject.org/wiki/Releases/Branched)
    are located
    [here](http://koji.fedoraproject.org/koji/tasks?start=0&state=all&view=tree&method=image&order=-id).
-   ```
+
+```
 # EXAMPLE:
 
 $ tar -xvJf Fedora-Docker-Base-rawhide-20150716.x86_64.tar.xz
@@ -41,7 +42,8 @@ repositories
    `fedora-${release}-release`. This is needed because Docker Hub only takes
    tarballs of the rootfs while the koji tarball has the rootfs along with
    metadata.
-   ```
+
+```
 # EXAMPLE:
 
 $ mv layer.tar fedora-rawhide-20150716.tar
@@ -55,7 +57,8 @@ $ xz --best fedora-rawhide-20150716.tar
 
 4. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
    history so we aren’t storing giant piles of tarballs in git.
-   ```
+
+```
 # EXAMPLE
 
 $ git checkout master
