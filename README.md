@@ -116,9 +116,9 @@ $ git rm --cached -r .
 
 $ rm -fr ./*
 
-## Copy in the files from your working dir
+## Move in the files from your working dir
 
-$ cp -r /tmp/fedora-26-docker/* .
+$ mv /tmp/fedora-26-docker/{x86_64,armhfp,aarch64,ppc64le} .
 
 $ git add .
 
