@@ -65,9 +65,6 @@ minimal_build_name=$(koji -q latest-build --type=image f${1}-updates-candidate F
 temp_dir=$(mktemp -d)
 workspace_dir="${temp_dir}/workspace"
 pushd ${temp_dir} &> /dev/null
-    # setup working dir structure
-    # Need a dir for each arch, add more if/when needed
-    mkdir -p ${workspace_dir}/{x86_64,armhfp,aarch64,ppc64le}
 
     # Download the latest builds from koji
     koji download-build --type=image ${build_name}
@@ -79,6 +76,10 @@ pushd ${temp_dir} &> /dev/null
         intermediate_dir=$(tar --list -f ./${image} | head -1)
         compose_id=$(printf ${image} | awk -F. '{print $1}' | awk -F\- '{print $5}')
         arch=$(printf ${image} | awk -F. '{print $3}')
+
+        # setup working dir structure
+        # Need a dir for each arch, add more if/when needed
+        mkdir -p ${workspace_dir}/${arch}
 
         result_tar="fedora-${1}-${arch}-${compose_id}.tar"
         result_tar_path="${workspace_dir}/${arch}/${result_tar}"
