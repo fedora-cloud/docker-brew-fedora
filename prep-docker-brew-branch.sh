@@ -41,11 +41,8 @@ f_clean_docker_images ()
     done
 }
 
-# This is the release of Fedora that is currently stable, it will define if we
-# need to move the fedora:latest tag
-current_stable="26"
-
-# Define what is rawhide so we know to push that tag
+# Define what is rawhide so we know to field separate in the right location to
+# determine the architecture
 current_rawhide="28"
 
 # Sanity checking
@@ -75,7 +72,13 @@ pushd ${temp_dir} &> /dev/null
     do
         intermediate_dir=$(tar --list -f ./${image} | head -1)
         compose_id=$(printf ${image} | awk -F. '{print $1}' | awk -F\- '{print $5}')
-        arch=$(printf ${image} | awk -F. '{print $3}')
+        if [[ ${1} == ${current_rawhide} ]]; then
+            # The field changes place in the rawhide builds because it's not
+            # an official release artifact and is marked '.n' for nightly
+            arch=$(printf ${image} | awk -F. '{print $4}')
+        else
+            arch=$(printf ${image} | awk -F. '{print $3}')
+        fi
 
         # setup working dir structure
         # Need a dir for each arch, add more if/when needed
