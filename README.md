@@ -22,6 +22,13 @@ Docker Base Image Import process
    directory. This requires the `koji` and `tar` packages to be installed on the
    machine where you run this.
 
+   To run to script, pass in the version number of the Fedora release you're
+   targeting.
+
+```
+./prep-docker-brew-branch.sh 26
+```
+
    At the end of the script you will see something similar to:
 
 ```
