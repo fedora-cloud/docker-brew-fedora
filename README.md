@@ -55,9 +55,9 @@ $ tree /tmp/tmp.Jckt4DUhIM/workspace
 │   └── fedora-26-ppc64le-20170912.tar.xz
 └── x86_64
     ├── Dockerfile
-        └── fedora-26-x86_64-20170912.tar.xz
+    └── fedora-26-x86_64-20170912.tar.xz
 
-        4 directories, 8 files
+    4 directories, 8 files
 ```
 
 2. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
@@ -86,7 +86,7 @@ $ mv ${work_dir}/{x86_64,armhfp,aarch64,ppc64le} .
 
 $ git add .
 
-$ gc -m "Update to fedora 26 - 20170912"
+$ git commit -m "Update fedora 26 - 20170912"
 [26 (root-commit) c726745] add multi-arch for fedora 26
  8 files changed, 24 insertions(+)
  create mode 100644 aarch64/Dockerfile
