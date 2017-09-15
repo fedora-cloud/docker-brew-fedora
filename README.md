@@ -82,7 +82,7 @@ $ rm -fr ./*
 
 ## Move in the files from your working dir
 
-$ mv ${work_dir}/{x86_64,armhfp,aarch64,ppc64le} .
+$ mv ${work_dir}/* .
 
 $ git add .
 
@@ -90,13 +90,13 @@ $ git commit -m "Update fedora 26 - 20170912"
 [26 (root-commit) c726745] add multi-arch for fedora 26
  8 files changed, 24 insertions(+)
  create mode 100644 aarch64/Dockerfile
- create mode 100644 aarch64/fedora-26-aarch64-20170705.tar.xz
+ create mode 100644 aarch64/fedora-26-aarch64-20170915.tar.xz
  create mode 100644 armhfp/Dockerfile
- create mode 100644 armhfp/fedora-26-armhfp-20170705.tar.xz
+ create mode 100644 armhfp/fedora-26-armhfp-20170915.tar.xz
  create mode 100644 ppc64le/Dockerfile
- create mode 100644 ppc64le/fedora-26-ppc64le-20170705.tar.xz
+ create mode 100644 ppc64le/fedora-26-ppc64le-20170915.tar.xz
  create mode 100644 x86_64/Dockerfile
- create mode 100644 x86_64/fedora-26-x86_64-20170705.tar.xz
+ create mode 100644 x86_64/fedora-26-x86_64-20170915.tar.xz
 
 
 $ git push -f origin 26
