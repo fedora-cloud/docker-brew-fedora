@@ -18,93 +18,50 @@ Image, please file an
 Docker Base Image Import process
 --------------------------------
 
-1. Setup a workspace tempdir, this can really be anywhere on your filesystem but
-   I'm going to say `/tmp/` for the purpose of the example.
+1. Run the `./prep-docker-brew-branch.sh` script, this will create a "stage"
+   directory. This requires the `koji` and `tar` packages to be installed on the
+   machine where you run this.
 
-   Make a subdirectory for each container image type we support (Currently that
-   is `x86_64`, `armhfp`, `aarch64`, and `ppc64le`).
-
-```
-$ mkdir -p /tmp/fedora-26-docker/{x86_64,armhfp,aarch64,ppc64le}
-
-$ cd /tmp/fedora-26-docker
+   At the end of the script you will see something similar to:
 
 ```
-
-2. Extract the rootfs from the koji tarballs that
-   [Fedora Release-Engineering](https://fedoraproject.org/wiki/ReleaseEngineering)
-   provides.
-   * Nightly builds of [rawhide](https://fedoraproject.org/wiki/Releases/Rawhide)
-   and
-   [branched](https://fedoraproject.org/wiki/Releases/Branched)
-   are located
-   [here](http://koji.fedoraproject.org/koji/tasks?start=0&state=all&view=tree&method=image&order=-id).
-
-   You will need to pull an image for each architecture we support (currently
-   that is ``x86_64``, ``armhfp``, ``aarch64``, and ``ppc64le``). You will need
-   to follow the below process for each architecture also.
-
-```
-# EXAMPLE:
-
-$ tar -xvJf Fedora-Docker-Base-26-1.5.x86_64.tar.xz
-075f42bd7f5192efdb25ebe5d0c9ea0f2a67f0bb9c0cae64ab85360657d25ba7/
-075f42bd7f5192efdb25ebe5d0c9ea0f2a67f0bb9c0cae64ab85360657d25ba7/layer.tar
-075f42bd7f5192efdb25ebe5d0c9ea0f2a67f0bb9c0cae64ab85360657d25ba7/VERSION
-075f42bd7f5192efdb25ebe5d0c9ea0f2a67f0bb9c0cae64ab85360657d25ba7/json
-repositories
-7c100629c0cb12a60446f5b67e18d049d22794fc34fbf76c523290d0e8858bef.json
-manifest.json
+COMPLETED
+=> Working dir: /tmp/tmp.Jckt4DUhIM/workspace
+=> Temp dir: /tmp/tmp.Jckt4DUhIM
+=> Update: 20170912
 ```
 
-3. Re-name the `layer.tar` to something meaningful, example
-   `fedora-${release}-${arch}-${compose_date}`. This is needed because Docker
-   Hub only takes tarballs of the rootfs while the koji tarball has the rootfs
-   along with metadata.
-
-   NOTE: `$compose_date` is found on the koji web page you downloaded the image
-   from.
+2. Make sure that the result of the previous is correct, it should look like the
+   following:
 
 ```
-# EXAMPLE:
+$ tree /tmp/tmp.Jckt4DUhIM/workspace
+/tmp/tmp.Jckt4DUhIM/workspace
+├── aarch64
+│   ├── Dockerfile
+│   └── fedora-26-aarch64-20170912.tar.xz
+├── armhfp
+│   ├── Dockerfile
+│   └── fedora-26-armhfp-20170912.tar.xz
+├── ppc64le
+│   ├── Dockerfile
+│   └── fedora-26-ppc64le-20170912.tar.xz
+└── x86_64
+    ├── Dockerfile
+        └── fedora-26-x86_64-20170912.tar.xz
 
-$ mv layer.tar x86_64/fedora-26-x86_64-20170705.tar
-
-$ xz --best x86_64/fedora-26-x86_64-20170705.tar
+        4 directories, 8 files
 ```
 
-4. Copy the `Dockerfile` from the corresponding branch of this repo into our
-   workspace and update it. In this example we're using the `26` branch to
-   correspond to the Fedora 26 release.
-
-```
-
-$ git checkout 26
-
-$ cp x86_64/Dockerfile /tmp/fedora-26-docker/x86_64/
-
-```
-
-Now update the `ADD` statement in the Dockerfile.
-
-Example:
-
-```
-FROM scratch
-MAINTAINER \
-[Adam Miller <maxamillion@fedoraproject.org>] \
-[Patrick Uiterwijk <patrick@puiterwijk.org>]
-ENV DISTTAG=f26docker FGC=f26 FBR=f26
-ADD fedora-26-x86_64-20170705.tar.xz /
-```
-
-### REPEAT THIS PROCESS FOR EACH ARCHITECTURE BEFORE MOVING ON TO STEP 5
-
-5. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
+2. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
    history so we aren’t storing giant piles of tarballs in git.
 
 ```
 # EXAMPLE
+
+# The value of work_dir comes from the previous output of the
+# ./prep-docker-brew-branch.sh script in Step 1
+$ work_dir=/tmp/tmp.Jckt4DUhIM/workspace
 
 $ git checkout master
 
@@ -118,11 +75,11 @@ $ rm -fr ./*
 
 ## Move in the files from your working dir
 
-$ mv /tmp/fedora-26-docker/{x86_64,armhfp,aarch64,ppc64le} .
+$ mv ${work_dir}/{x86_64,armhfp,aarch64,ppc64le} .
 
 $ git add .
 
-$ gc -m "add multi-arch for fedora 26"
+$ gc -m "Update to fedora 26 - 20170912"
 [26 (root-commit) c726745] add multi-arch for fedora 26
  8 files changed, 24 insertions(+)
  create mode 100644 aarch64/Dockerfile
@@ -138,10 +95,10 @@ $ gc -m "add multi-arch for fedora 26"
 $ git push -f origin 26
 ```
 
-5. Record commit logs of the updates
+3. Record commit logs of the updates
    [here](https://github.com/fedora-cloud/official-images/blob/master/library/fedora)
 
-6. Send a [Pull Request](https://help.github.com/articles/using-pull-requests/)
+4. Send a [Pull Request](https://help.github.com/articles/using-pull-requests/)
    from
    [fedora-cloud/official-images](https://github.com/fedora-cloud/official-images)
    to
