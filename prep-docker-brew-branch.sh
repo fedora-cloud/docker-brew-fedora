@@ -41,10 +41,6 @@ f_clean_docker_images ()
     done
 }
 
-# Define what is rawhide so we know to field separate in the right location to
-# determine the architecture
-current_rawhide="28"
-
 # Sanity checking
 # FIXME - Have to update this regex every time we drop a new Fedora Release
 if ! [[ "${1}" =~ [24|25|26|27|28] ]];
@@ -72,13 +68,7 @@ pushd ${temp_dir} &> /dev/null
     do
         intermediate_dir=$(tar --list -f ./${image} | head -1)
         compose_id=$(printf ${image} | awk -F. '{print $1}' | awk -F\- '{print $5}')
-        if [[ ${1} == ${current_rawhide} ]]; then
-            # The field changes place in the rawhide builds because it's not
-            # an official release artifact and is marked '.n' for nightly
-            arch=$(printf ${image} | awk -F. '{print $4}')
-        else
-            arch=$(printf ${image} | awk -F. '{print $3}')
-        fi
+        arch=$(printf ${image%*.tar.xz} | awk -F. '{print $NF}')
 
         # setup working dir structure
         # Need a dir for each arch, add more if/when needed
