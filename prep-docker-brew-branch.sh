@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # Prep a docker-brew-fedora[0] branch
 #
@@ -43,16 +43,30 @@ f_clean_docker_images ()
 
 # Sanity checking
 # FIXME - Have to update this regex every time we drop a new Fedora Release
-if ! [[ "${1}" =~ [24|25|26|27|28] ]];
+if ! [[ "${1}" =~ [24|25|26|27|28|rawhide] ]];
 then
     printf "ERROR: FEDORA_RELEASE missing or invalid\n"
     f_help
     exit 1
 fi
 
+if [[ "${1}" == "rawhide" ]];
+then
+	tag="f29-build"
+else
+	tag="f${1}-updates-candidate"
+fi
+
+
 # We need to query koji to find out what the latest successful builds are
-build_name=$(koji -q latest-build --type=image f${1}-updates-candidate Fedora-Docker-Base | awk '{print $1}')
-minimal_build_name=$(koji -q latest-build --type=image f${1}-updates-candidate Fedora-Container-Minimal-Base | awk '{print $1}')
+if [[ "${1}" =~ [28|rawhide] ]];
+then
+	# This was renamed for f28+
+	build_name=$(koji -q latest-build --type=image $tag Fedora-Container-Base | awk '{print $1}')
+else
+	build_name=$(koji -q latest-build --type=image $tag Fedora-Docker-Base | awk '{print $1}')
+fi
+minimal_build_name=$(koji -q latest-build --type=image $tag Fedora-Container-Minimal-Base | awk '{print $1}')
 
 # Download the image
 temp_dir=$(mktemp -d)
