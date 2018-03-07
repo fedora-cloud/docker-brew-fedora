@@ -59,7 +59,7 @@ fi
 
 
 # We need to query koji to find out what the latest successful builds are
-if [[ "${1}" =~ [28|rawhide] ]];
+if [ "${1}" == "rawhide" -o "${1}" == "28" ];
 then
 	# This was renamed for f28+
 	build_name=$(koji -q latest-build --type=image $tag Fedora-Container-Base | awk '{print $1}')
