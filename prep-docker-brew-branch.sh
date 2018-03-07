@@ -45,23 +45,24 @@ f_clean_docker_images ()
 
 # Sanity checking
 # FIXME - Have to update this regex every time we drop a new Fedora Release
-if ! [[ "${1}" =~ [24|25|26|27|28|rawhide] ]];
+if ! [[ "${1}" =~ [24|25|26|27|28|29] ]];
 then
     printf "ERROR: FEDORA_RELEASE missing or invalid\n"
     f_help
     exit 1
 fi
 
-if [[ "${1}" == "rawhide" ]];
+# FIXME - Have to update the 29 everytime
+if [[ "${1}" == "29" ]];
 then
-	tag="f29-build"
+	tag="f${1}"
 else
 	tag="f${1}-updates-candidate"
 fi
 
 
 # We need to query koji to find out what the latest successful builds are
-if [ "${1}" == "rawhide" -o "${1}" == "28" ];
+if [ "${1}" == "29" -o "${1}" == "28" ];
 then
 	# This was renamed for f28+
 	build_name=$(koji -q latest-build --type=image $tag Fedora-Container-Base | awk '{print $1}')
