@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 #
 # Prep a docker-brew-fedora[0] branch
 #
