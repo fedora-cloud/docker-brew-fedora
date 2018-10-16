@@ -114,9 +114,9 @@ popd &> /dev/null
 
 echo "Testing x86_64..."
 testtag=$(uuidgen)
-docker build -t ${testtag} "${workspace_dir}/x86_64"
-docker run --rm --entrypoint /bin/bash ${testtag} -c "/bin/dnf install -y cowsay && cowsay Working"
-docker rmi ${testtag}
+podman build -t ${testtag} "${workspace_dir}/x86_64"
+podman run --rm --entrypoint /bin/bash ${testtag} -c "/bin/dnf install -y cowsay && cowsay Working"
+podman rmi ${testtag}
 echo "Seems to be working reasonableish"
 
 printf "COMPLETED\n=> Working dir: ${workspace_dir}\n"
