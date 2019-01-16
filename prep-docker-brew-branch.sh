@@ -101,11 +101,10 @@ pushd ${temp_dir} &> /dev/null
 
         cat > ${workspace_dir}/${arch}/Dockerfile <<EOF
 FROM scratch
-MAINTAINER \\
-[Adam Miller <maxamillion@fedoraproject.org>] \\
-[Patrick Uiterwijk <patrick@puiterwijk.org>]
+LABEL maintainer="Clement Verna <cverna@fedoraproject.org>"
 ENV DISTTAG=f${1}container FGC=f${1} FBR=f${1}
 ADD ${result_tar}.xz /
+CMD ["/bin/bash"]
 EOF
 
     done
