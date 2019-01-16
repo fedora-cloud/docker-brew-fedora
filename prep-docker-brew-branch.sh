@@ -7,6 +7,9 @@
 #
 # [0] - https://github.com/fedora-cloud/docker-brew-fedora
 
+# use all CPU cores when compressing unless XZ_DEFAULTS is already defined
+export XZ_DEFAULTS="${XZ_DEFAULTS:--T 0}"
+
 f_ctrl_c() {
     printf "\n*** Exiting ***\n"
     exit $?
