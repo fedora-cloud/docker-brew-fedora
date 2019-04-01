@@ -1,0 +1,5 @@
+FROM scratch
+LABEL maintainer="Clement Verna <cverna@fedoraproject.org>"
+ENV DISTTAG=f{{ tag }}container FGC=f{{ tag }} FBR=f{{ tag }}
+ADD {{ result_tar }} /
+CMD ["/bin/bash"]
