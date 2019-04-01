@@ -1,1 +1,27 @@
-fedoraInfraTox { }
+def call(Closure body) {
+    def fedora_containers = [
+                    containerTemplate(name: "f29",
+                                      image: "172.30.254.79:5000/bstinson/python-tox:f29",
+                                      ttyEnabled: true,
+                                      alwaysPullImage: true,
+                                      command: "cat",
+                                      workingDir: '/workdir')
+    ]
+
+    podTemplate(name: 'fedora-tox',
+                label: 'fedora-tox',
+                cloud: 'openshift',
+                containers: fedora_containers
+    ){
+        node('fedora-tox'){
+            stage('checkout'){
+                checkout scm
+            }
+            stage('Run Release'){
+                container("f29"){
+                    sh("tox")
+                }
+            }
+        }
+    }
+}

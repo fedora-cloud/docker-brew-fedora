@@ -85,6 +85,7 @@ def push_containers(c, release, minimal=False, workdir="/tmp/"):
         dockerfile = template.render(tag=release, result_tar=result_tar + ".xz")
         with open(workspace + arch + "/Dockerfile", "w") as fp:
             fp.write(dockerfile)
+        print("Workspace ready")
 
     if not "docker-brew-fedora" in os.listdir(workdir):
         c.run(f"git clone {GIT_REPO}")
