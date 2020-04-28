@@ -13,94 +13,31 @@ file that is part of the [Fedora
 kickstarts](https://pagure.io/fedora-kickstarts) sub-project of Fedora. If there
 is an issue or request for a change to the contents of the Fedora Docker Base
 Image, please file an
-[bug](https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&component=spin-kickstarts).
+[bug](https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora Container Images&component=fedora-container-image).
 
 Docker Base Image Import process
 --------------------------------
-
-1. Run the `./prep-docker-brew-branch.sh` script, this will create a "stage"
-   directory. This requires the `koji` and `tar` packages to be installed on the
-   machine where you run this.
-
-   To run to script, pass in the version number of the Fedora release you're
-   targeting.
-
+1. Install the dependencies in a virtual environment
 ```
-./prep-docker-brew-branch.sh 26
-```
+   $ python -m venv .venv
+   $ source .venv/bin/activate
+   (.venv) $ pip install -r requirements.txt
 
-   At the end of the script you will see something similar to:
-
+2. Run the tasks using the invoke command.
 ```
-COMPLETED
-=> Working dir: /tmp/tmp.Jckt4DUhIM/workspace
-=> Temp dir: /tmp/tmp.Jckt4DUhIM
-=> Update: 20170912
+    (.venv) $ invoke --list
+    Available tasks:
+
+      push-containers
 ```
 
-2. Make sure that the result of the previous is correct, it should look like the
-   following:
+To push the Fedora 31 container we can run the following command
 
 ```
-$ tree /tmp/tmp.Jckt4DUhIM/workspace
-/tmp/tmp.Jckt4DUhIM/workspace
-├── aarch64
-│   ├── Dockerfile
-│   └── fedora-26-aarch64-20170912.tar.xz
-├── armhfp
-│   ├── Dockerfile
-│   └── fedora-26-armhfp-20170912.tar.xz
-├── ppc64le
-│   ├── Dockerfile
-│   └── fedora-26-ppc64le-20170912.tar.xz
-└── x86_64
-    ├── Dockerfile
-    └── fedora-26-x86_64-20170912.tar.xz
-
-    4 directories, 8 files
+    (.venv) $ invoke push-containers 31
 ```
 
-2. Force push to fedora-cloud/docker-brew-fedora on github in order to overwrite
-   history so we aren’t storing giant piles of tarballs in git.
-
-```
-# EXAMPLE
-
-# The value of work_dir comes from the previous output of the
-# ./prep-docker-brew-branch.sh script in Step 1
-$ work_dir=/tmp/tmp.Jckt4DUhIM/workspace
-
-$ git checkout master
-
-$ git branch -D 26
-
-$ git checkout --orphan 26
-
-$ git rm --cached -r .
-
-$ rm -fr ./*
-
-## Move in the files from your working dir
-
-$ mv ${work_dir}/* .
-
-$ git add .
-
-$ git commit -m "Update fedora 26 - 20170912"
-[26 (root-commit) c726745] add multi-arch for fedora 26
- 8 files changed, 24 insertions(+)
- create mode 100644 aarch64/Dockerfile
- create mode 100644 aarch64/fedora-26-aarch64-20170915.tar.xz
- create mode 100644 armhfp/Dockerfile
- create mode 100644 armhfp/fedora-26-armhfp-20170915.tar.xz
- create mode 100644 ppc64le/Dockerfile
- create mode 100644 ppc64le/fedora-26-ppc64le-20170915.tar.xz
- create mode 100644 x86_64/Dockerfile
- create mode 100644 x86_64/fedora-26-x86_64-20170915.tar.xz
-
-
-$ git push -f origin 26
-```
+This will push format and push the Dockerfile and rootfs tarball on the 31 branch.
 
 3. Record commit logs of the updates
    [here](https://github.com/fedora-cloud/official-images/blob/master/library/fedora)
