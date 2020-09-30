@@ -10,7 +10,10 @@ on:
       release:
         description: 'Name of the Fedora release'
         required: true
-    
+      date:
+        description: 'Date of the update (format YYYY-MM-DD)'
+        required: true
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -22,19 +25,36 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-      - name: Install dependencies
+      - name : Prepare the repository
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          git branch -D ${{ github.event.inputs.release }} \
+          && git checkout --orphan ${{ github.event.inputs.release }}\
+          && git rm --cached -r .\
+          rm -fr ./*
 
-      - name: Run the 
+      - name: Get the fedora-container-release binary
+        run : |
+          curl -o /tmp/fedora-container-release https://cverna.fedorapeople.org/fedora-container-release
+
+      - name: Add permission to the binary
         run: |
-          invoke push-containers ${{ github.event.inputs.release }}
-          
+          chmod a+x /tmp/fedora-container-release
+
+      - name: Run the release script
+        run: |
+          /tmp/fedora-container-release --release ${{ github.event.inputs.release }}
+
+      - name: Delete downloaded archives
+        run : |
+          rm -rf *.tar.xz
+
+      - name: Commit the change
+        run : |
+          git add . \
+          && git config --local user.email "container-sig@lists.fedorahosted.org" \
+          && git config --local user.name "Fedora Container SIG" \
+          && git commit -a -m "Update Fedora ${{ github.event.inputs.release }} - ${{ github.event.inputs.date }}"
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
