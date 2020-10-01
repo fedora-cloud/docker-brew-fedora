@@ -17,33 +17,16 @@ Image, please file an
 
 Docker Base Image Import process
 --------------------------------
-1. Install the dependencies in a virtual environment
-```
-   $ python -m venv .venv
-   $ source .venv/bin/activate
-   (.venv) $ pip install -r requirements.txt
 
-2. Run the tasks using the invoke command.
-```
-    (.venv) $ invoke --list
-    Available tasks:
+To update the Docker Base image you can use the [Update Images workflow](https://github.com/fedora-cloud/docker-brew-fedora/actions?query=workflow%3A%22Update+Images%22).
 
-      push-containers
-```
+When manually running the workflow you have to provide the release number (eg 32) and the date of the update (YYYY-MM-DD).
 
-To push the Fedora 31 container we can run the following command
+The GitHub action is using [fedora-container-release](https://github.com/fedora-cloud/fedora-container-release) cli to fetch images from Fedora's koji.
 
-```
-    (.venv) $ invoke push-containers 31
-```
+Each workflow will push the images to the matching release branch (eg [branch 32](https://github.com/fedora-cloud/docker-brew-fedora/tree/32))
 
-This will push format and push the Dockerfile and rootfs tarball on the 31 branch.
+Then record commit logs of the updates [here](https://github.com/fedora-cloud/official-images/blob/master/library/fedora)
 
-3. Record commit logs of the updates
-   [here](https://github.com/fedora-cloud/official-images/blob/master/library/fedora)
-
-4. Send a [Pull Request](https://help.github.com/articles/using-pull-requests/)
-   from
-   [fedora-cloud/official-images](https://github.com/fedora-cloud/official-images)
-   to
-   [docker-library/official-images](https://github.com/docker-library/official-images/)
+And send a [Pull Request](https://help.github.com/articles/using-pull-requests/) from [fedora-cloud/official-images](https://github.com/fedora-cloud/official-images)
+to [docker-library/official-images](https://github.com/docker-library/official-images/)
