@@ -37,7 +37,7 @@ jobs:
         run: |
           git checkout -b tmp
           git branch -D ${{ github.event.inputs.release }}
-          git checkout --orphan test
+          git checkout --orphan ${{ github.event.inputs.release }}
           git rm --cached -r .
           rm -fr ./*
 
@@ -60,5 +60,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: test
+          branch: ${{ github.event.inputs.release }}
           force: true
