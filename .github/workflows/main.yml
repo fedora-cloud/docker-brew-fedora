@@ -25,20 +25,21 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name : Prepare the repository
-        run: |
-          git branch -D ${{ github.event.inputs.release }} \
-          && git checkout --orphan ${{ github.event.inputs.release }}\
-          && git rm --cached -r .\
-          rm -fr ./*
+        with:
+          branch: ${{ github.event.inputs.release }}
 
       - name: Get the fedora-container-release binary
         run : |
           curl -o /tmp/fedora-container-release https://cverna.fedorapeople.org/fedora-container-release
-
-      - name: Add permission to the binary
-        run: |
           chmod a+x /tmp/fedora-container-release
+
+      - name: Prepare the repository
+        run: |
+          git checkout master
+          git branch -D ${{ github.event.inputs.release }}
+          git checkout --orphan test
+          git rm --cached -r .
+          rm -fr ./*
 
       - name: Run the release script
         run: |
@@ -50,14 +51,14 @@ jobs:
 
       - name: Commit the change
         run : |
-          git add . \
-          && git config --local user.email "container-sig@lists.fedorahosted.org" \
-          && git config --local user.name "Fedora Container SIG" \
-          && git commit -a -m "Update Fedora ${{ github.event.inputs.release }} - ${{ github.event.inputs.date }}"
+          git add .
+          git config --local user.email "container-sig@lists.fedorahosted.org"
+          git config --local user.name "Fedora Container SIG"
+          git commit -a -m "Update Fedora ${{ github.event.inputs.release }} - ${{ github.event.inputs.date }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.event.inputs.release }}
+          branch: test
           force: true
