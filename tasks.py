@@ -109,3 +109,5 @@ def push_containers(c, release, minimal=False, workdir="/tmp/"):
     c.run(f"rm -rf {workdir + workspace}", warn=True)
     c.run("git add .", warn=True)
     c.run(f"git commit -m 'Update fedora {release} - {datetime.date.today()}'", warn=True)
+    c.run(f"git push -f origin {release}", warn=True)
+    c.run(f"git checkout master", warn=True)
