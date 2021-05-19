@@ -13,7 +13,7 @@ file that is part of the [Fedora
 kickstarts](https://pagure.io/fedora-kickstarts) sub-project of Fedora. If there
 is an issue or request for a change to the contents of the Fedora Docker Base
 Image, please file an
-[bug](https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora Container Images&component=fedora-container-image).
+[bug](https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20Container%20Images&component=fedora-container-image).
 
 Docker Base Image Import process
 --------------------------------
