@@ -5,6 +5,7 @@ name: Update Images
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  workflow_dispatch:
   schedule:
     - cron: "30 10 * * *"
 
@@ -27,8 +28,9 @@ jobs:
 
       - name: Get the fedora-container-release binary
         run : |
-          curl -o /tmp/fedora-container-release https://cverna.fedorapeople.org/fedora-container-release
-          chmod a+x /tmp/fedora-container-release
+          sudo apt-get update
+          sudo apt-get -y install podman
+          podman pull quay.io/cverna/fedora-container-release:latest
 
       - name: Prepare the repository
         run: |
@@ -40,7 +42,7 @@ jobs:
 
       - name: Run the release script
         run: |
-          /tmp/fedora-container-release --release ${{ matrix.version }}
+          podman run --rm fedora-container-release:latest ${{ matrix.version }}
 
       - name: Delete downloaded archives
         run : |
