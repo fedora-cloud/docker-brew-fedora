@@ -42,7 +42,7 @@ jobs:
 
       - name: Run the release script
         run: |
-          podman run --rm fedora-container-release:latest ${{ matrix.version }}
+          podman run --rm --workdir /tmp -v $PWD:/tmp:z fedora-container-release:latest ${{ matrix.version }} 
 
       - name: Delete downloaded archives
         run : |
