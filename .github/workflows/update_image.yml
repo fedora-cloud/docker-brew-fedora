@@ -47,7 +47,7 @@ jobs:
           podman run --rm --workdir /tmp -v $PWD:/tmp:z fedora-container-release:latest ${{ matrix.version }}
 
       - name: Run the release script 40, 41
-        if: ${{ matrix.version > 39 }} && ${{ matrix.version < 42 }}
+        if: ${{ matrix.version == 40 && matrix.version == 41 }}
         run: |
           podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp
 
