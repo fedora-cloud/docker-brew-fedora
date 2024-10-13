@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Diff Images
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on: 
+  schedule:
+    - cron: "00 11 * * *"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  diff:
+    strategy:
+      matrix:
+        version: [35, 36, 37, 38]
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ matrix.version }}
+
+      - name: Install podman
+        run : |
+          sudo apt-get -y update
+          sudo apt-get -y install podman
+
+
+      - name: Build the image and pull the latest from the registry
+        run: |
+          cd x86_64
+          podman build -t fedora_update .
+          podman run --name fedora quay.io/fedora/fedora:${{ matrix.version }} rpm -qa > /tmp/rpm_output_a
+          podman run --name fedora_update fedora_update:latest rpm -qa > /tmp/rpm_output_b
+
+      - name: Export the rootfs of the images
+        run: |
+          podman export -o fedora_update.tar fedora_update
+          podman export -o fedora.tar fedora
+          tar -tf fedora.tar > /tmp/rootfs_output_a
+          tar -tf fedora_update.tar > /tmp/rootfs_output_b
+
+      - name: Generate the diff of the images' rpms
+        run: git --no-pager diff /tmp/rpm_output_a /tmp/rpm_output_b
+        continue-on-error: true
+      
+      - name: Generate the diff of the images' roofs
+        run: git --no-pager diff /tmp/rootfs_output_a /tmp/rootfs_output_b
+        continue-on-error: true
+      
