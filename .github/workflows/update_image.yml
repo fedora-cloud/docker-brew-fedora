@@ -48,7 +48,7 @@ jobs:
       - name: Run the release script == 42
         if: ${{ matrix.version == 42 }}
         run: |
-          podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp
+          podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp --branched
 
       - name: Run the release script == 43
         if: ${{ matrix.version == 43 }}
