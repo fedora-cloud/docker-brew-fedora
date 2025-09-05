@@ -15,7 +15,7 @@ jobs:
   update:
     strategy:
       matrix:
-        version: [41, 42, 43]
+        version: [41, 42, 43, 44]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -40,18 +40,18 @@ jobs:
           git rm --cached -r .
           rm -fr ./*
 
-      - name: Run the release script 41
-        if: ${{ matrix.version == 41 }}
-        run: |
-          podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp
-
-      - name: Run the release script == 42
-        if: ${{ matrix.version == 42 }}
+      - name: Run the release script 41, 42
+        if: ${{ matrix.version == 41 }} || ${{ matrix.version == 42 }}
         run: |
           podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp
 
       - name: Run the release script == 43
         if: ${{ matrix.version == 43 }}
+        run: |
+          podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp
+
+      - name: Run the release script == 44
+        if: ${{ matrix.version == 44 }}
         run: |
           podman run --rm --workdir /tmp -v $PWD:/tmp:z download_fedora_container:latest ${{ matrix.version }} --output-dir /tmp --rawhide
 
