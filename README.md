@@ -8,9 +8,8 @@ Base Images built in [Fedora Koji](http://koji.fedoraproject.org/koji/)
 [official-images](https://github.com/docker-library/official-images) repository
 for the [Docker Hub](https://hub.docker.com/).
 
-These images are built from a [kickstart](https://github.com/rhinstaller/pykickstart/blob/master/docs/kickstart-docs.rst)
-file that is part of the [Fedora
-kickstarts](https://pagure.io/fedora-kickstarts) sub-project of Fedora. If there
+These images are built from a [kiwi image description](https://osinside.github.io/kiwi/image_description.html)
+file that is part of the [fedora-kiwi-descriptions](https://pagure.io/fedora-kiwi-descriptions) sub-project of Fedora. If there
 is an issue or request for a change to the contents of the Fedora Docker Base
 Image, please file an
 [bug](https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora%20Container%20Images&component=fedora-container-image).
